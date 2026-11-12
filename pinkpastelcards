@@ -1,0 +1,2192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pastel Flashcards 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-50: #fff0f5;
+    --pink-100: #ffe4ec;
+    --pink-200: #ffc2d4;
+    --pink-300: #ff9ebb;
+    --pink-400: #ff7aa2;
+    --pink-500: #ff5c8a;
+    --lavender: #f5d6e8;       /* softer pink-lavender */
+    --lavender-dark: #ebc4d8;
+    --cream: #fff9f5;
+    --text: #5a3d4a;
+    --text-soft: #8a6a75;
+    --white: #ffffff;
+    --shadow: 0 8px 24px rgba(255, 122, 162, 0.18);
+    --shadow-soft: 0 4px 12px rgba(255, 122, 162, 0.12);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(160deg, #fff5f8 0%, #ffe4ec 40%, #ffd6e5 70%, #ffe8f0 100%);
+    min-height: 100vh;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* Cute custom scrollbars */
+  .cute-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--pink-300) transparent;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .cute-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .cute-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 194, 212, 0.15);
+    border-radius: 9999px;
+  }
+  .cute-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--pink-300);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+  .cute-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--pink-400);
+  }
+
+  .hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .heart {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0.18;
+    animation: floatHeart 12s infinite ease-in-out;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 0 4px rgba(255, 182, 193, 0.4));
+  }
+  .heart.glitter {
+    filter: drop-shadow(0 0 6px rgba(255, 220, 240, 0.75)) drop-shadow(0 0 12px rgba(255, 150, 200, 0.4));
+  }
+  /* Tiny glowing circle particles */
+  .sparkle-dot {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  @keyframes floatHeart {
+    0%, 100% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); }
+    25% { transform: translateY(-18px) translateX(8px) rotate(8deg) scale(1.05); }
+    50% { transform: translateY(-32px) translateX(-6px) rotate(-6deg) scale(0.96); }
+    75% { transform: translateY(-14px) translateX(10px) rotate(10deg) scale(1.03); }
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.8) rotate(0deg); }
+    40% { opacity: 0.65; transform: scale(1.25) rotate(12deg); }
+    60% { opacity: 0.3; transform: scale(1.05) rotate(-8deg); }
+  }
+  @keyframes glitterTwinkle {
+    0%, 100% { opacity: 0.15; transform: scale(0.6); }
+    20% { opacity: 0.9; transform: scale(1.3); }
+    40% { opacity: 0.25; transform: scale(0.85); }
+    60% { opacity: 0.75; transform: scale(1.15); }
+    80% { opacity: 0.2; transform: scale(0.7); }
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .logo {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.7rem;
+    background: linear-gradient(135deg, var(--pink-500), #c77dff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+    cursor: pointer;
+  }
+  .tagline {
+    color: var(--text-soft);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .screen {
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .screen.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 50px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-soft);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink-400), var(--pink-500));
+    color: white;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(255, 92, 138, 0.35);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: white;
+    color: var(--pink-500);
+    border: 2px solid var(--pink-200);
+  }
+  .btn-secondary:hover {
+    background: var(--pink-50);
+  }
+  .btn-sm {
+    padding: 7px 15px;
+    font-size: 0.82rem;
+  }
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1.1rem;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 182, 193, 0.4);
+  }
+  .panel {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid rgba(255, 182, 193, 0.35);
+  }
+
+  .deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+  }
+  .deck-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  .deck-card:hover {
+    border-color: var(--pink-300);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  .deck-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .deck-card p {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+  }
+  .deck-card .count {
+    display: inline-block;
+    margin-top: 12px;
+    background: var(--pink-100);
+    color: var(--pink-500);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .deck-actions {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .deck-card:hover .deck-actions {
+    opacity: 1;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--pink-100);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: white;
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--pink-300);
+  }
+  .card-pair {
+    background: var(--pink-50);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    border: 1px solid var(--pink-100);
+    position: relative;
+  }
+  .card-pair .remove-pair {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--pink-400);
+  }
+
+  /* Flashcard with slide transitions */
+  .flashcard-wrapper {
+    perspective: 1000px;
+    height: 330px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .flashcard-slider {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  }
+  .flashcard-slider.slide-out-left {
+    transform: translateX(-50px) scale(0.96);
+    opacity: 0;
+  }
+  .flashcard-slider.slide-out-right {
+    transform: translateX(50px) scale(0.96);
+    opacity: 0;
+  }
+  .flashcard-slider.slide-in-right {
+    transition: none !important;
+    transform: translateX(50px) scale(0.96);
+    opacity: 0;
+  }
+  .flashcard-slider.slide-in-left {
+    transition: none !important;
+    transform: translateX(-50px) scale(0.96);
+    opacity: 0;
+  }
+  .flashcard {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+  .flashcard.flipped {
+    transform: rotateY(180deg);
+  }
+  .flashcard-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .flashcard-front {
+    background: #ffffff;
+    border: 3px solid var(--pink-200);
+    color: var(--text);
+  }
+  .flashcard-back {
+    background: #ffffff;
+    border: 3px solid var(--pink-200);
+    color: var(--text);
+    transform: rotateY(180deg);
+  }
+
+  /* Match Board */
+  .match-board {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .match-board.grid-6 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .match-board.grid-12 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 640px) {
+    .match-board.grid-6 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .match-board.grid-12 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .match-tile {
+    height: 150px;
+    background: white;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    border: 3px solid var(--pink-100);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.2s;
+    user-select: none;
+    position: relative;
+  }
+  .match-tile:hover:not(.matched):not(.selected) {
+    border-color: var(--pink-300);
+    transform: translateY(-2px);
+  }
+  .match-tile.selected {
+    border-color: var(--pink-500);
+    background: var(--pink-50);
+    box-shadow: 0 0 0 3px rgba(255, 92, 138, 0.25);
+  }
+  .match-tile.matched {
+    background: linear-gradient(135deg, #e8fbf0, #d4f5e0);
+    border-color: #7dd3a0;
+    color: #1b5e39;
+    cursor: default;
+    opacity: 0.85;
+  }
+  .match-tile.wrong {
+    animation: shake 0.4s;
+    border-color: #ff8a8a;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .match-tile-content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    display: flex;
+    text-align: center;
+    word-break: break-word;
+    padding: 4px;
+  }
+  /* margin:auto centers short text, but long text starts at the TOP and scrolls fully
+     (align-items:center on the scroller used to cut off the top of long text) */
+  .match-tile-content > span {
+    margin: auto;
+    max-width: 100%;
+  }
+
+  /* Asteroid Arcade */
+  .asteroid-area {
+    position: relative;
+    height: 420px;
+    background: linear-gradient(180deg, #1a1025 0%, #2d1b3d 40%, #4a2c5a 100%);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 3px solid var(--pink-300);
+    box-shadow: var(--shadow);
+  }
+  .stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 25px 35px, #ffffff, transparent),
+      radial-gradient(2px 2px at 75px 85px, rgba(255,200,220,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 140px 60px, #ffffff, transparent),
+      radial-gradient(2px 2px at 210px 140px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1.5px 1.5px at 290px 45px, rgba(200,220,255,0.8), transparent),
+      radial-gradient(2px 2px at 360px 105px, #ffffff, transparent);
+    background-size: 450px 160px;
+    opacity: 0.65;
+    animation: twinkle 4s infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.4; }
+    to { opacity: 0.8; }
+  }
+  .asteroid {
+    position: absolute;
+    background: linear-gradient(145deg, #ff9ebb, #ff5c8a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    text-align: center;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 0 22px rgba(255, 122, 162, 0.45), inset 0 0 14px rgba(255,255,255,0.25);
+    cursor: pointer;
+    user-select: none;
+    border: 2px solid rgba(255,255,255,0.4);
+    word-break: break-word;
+    hyphens: auto;
+    line-height: 1.25;
+  }
+  .asteroid.target {
+    box-shadow: 0 0 0 4px #ffffff, 0 0 28px rgba(255,255,255,0.9);
+    transform: scale(1.08);
+  }
+  .asteroid.hit {
+    animation: explode 0.35s forwards;
+  }
+  @keyframes explode {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.35); opacity: 0.7; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  .game-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: gap;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .badge {
+    background: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--pink-100);
+  }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .mode-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.2s;
+  }
+  .mode-card:hover {
+    border-color: var(--pink-300);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  .mode-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .back-btn {
+    background: white;
+    border: 2px solid var(--pink-100);
+    color: var(--pink-500);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .back-btn:hover {
+    background: var(--pink-50);
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(90px);
+    background: white;
+    color: var(--text);
+    padding: 12px 24px;
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 100;
+    transition: transform 0.3s ease;
+    border: 2px solid var(--pink-200);
+    pointer-events: none;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(90, 61, 74, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .overlay-card {
+    background: white;
+    border-radius: 24px;
+    padding: 32px 24px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: var(--shadow);
+    transform: scale(0.9);
+    transition: transform 0.3s;
+    border: 2px solid var(--pink-200);
+  }
+  .overlay.show .overlay-card {
+    transform: scale(1);
+  }
+</style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="app">
+    <header>
+      <div class="logo" onclick="showScreen('home')">Pastel Cards 💕</div>
+      <div class="tagline">cute study vibes only</div>
+    </header>
+
+    <!-- HOME -->
+    <div id="home" class="screen active">
+      <div style="background:rgba(255, 255, 255, 0.75); border:1px solid var(--pink-200); border-radius:18px; padding:10px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:0.85rem; font-weight:600; color:var(--text);">
+          <span>🌸 <strong>100% Offline &amp; Cookie-Free</strong></span>
+          <span style="font-size:0.75rem; color:var(--text-soft);">(Zero cookies, no logins, no internet needed)</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-secondary btn-sm" onclick="exportDecksJson()" title="Download a JSON backup of your decks">💾 Backup Decks</button>
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer;" title="Restore decks from a JSON file">
+            📂 Restore
+            <input type="file" id="restoreFileInput" accept=".json" onchange="importDecksJson(event)" style="display:none;">
+          </label>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <h2 style="font-size:1.3rem;">Your Decks</h2>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary" onclick="showCreate()">＋ New Deck</button>
+        </div>
+      </div>
+      <div id="deckList" class="deck-grid"></div>
+      <div id="emptyState" style="text-align:center; padding:60px 20px; display:none;">
+        <div style="font-size:3.5rem; margin-bottom:12px;">🌸</div>
+        <p style="color:var(--text-soft);">No decks yet. Create your first one!</p>
+      </div>
+    </div>
+
+    <!-- CREATE / EDIT -->
+    <div id="create" class="screen">
+      <div class="top-bar">
+        <button class="back-btn" onclick="showScreen('home')">← Back</button>
+        <h2 id="createTitle" style="font-size:1.2rem;">New Deck</h2>
+        <div style="width:70px;"></div>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>Deck Name</label>
+          <input type="text" id="deckName" placeholder="e.g. Japanese Vocab 💕">
+        </div>
+
+        <div style="background:#fcf5ff; border-radius:16px; padding:16px; margin-bottom:18px; border:1px solid #e8d5f2;">
+          <h3 style="font-size:0.95rem; margin-bottom:8px;">📋 Import List</h3>
+          <p style="font-size:0.8rem; color:var(--text-soft); margin-bottom:10px;">
+            Paste <strong>term - definition</strong> (one per line):
+          </p>
+          <textarea id="importText" rows="5" placeholder="いいえ - no; you're welcome
+鉛筆/えんぴつ - pencil
+学生/がくせい - student"></textarea>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn btn-primary btn-sm" onclick="doImport()">Import Cards</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importText').value=''">Clear</button>
+          </div>
+          <p id="importResult" style="font-size:0.85rem; color:var(--text-soft); margin-top:8px;"></p>
+        </div>
+
+        <div id="pairsContainer"></div>
+        <button class="btn btn-secondary btn-sm" onclick="addPair()" style="margin-bottom:16px;">＋ Add Card</button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-primary" onclick="saveDeck()">Save Deck 💖</button>
+          <button class="btn btn-secondary" onclick="showScreen('home')">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DECK DETAIL -->
+    <div id="deckDetail" class="screen">
+      <div class="top-bar">
+        <button class="back-btn" onclick="showScreen('home')">← Back</button>
+        <h2 id="detailTitle" style="font-size:1.2rem;"></h2>
+        <button class="btn btn-secondary btn-sm" onclick="editCurrentDeck()">Edit</button>
+      </div>
+      <div class="panel" style="text-align:center; margin-bottom:12px;">
+        <p id="detailCount" style="color:var(--text-soft); font-weight:600;"></p>
+        <div id="levelSummary" style="display:flex; justify-content:center; flex-wrap:wrap; gap:8px; margin-top:10px;"></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:12px;" onclick="resetProgress()" title="Start every card in this deck over as New">↺ Reset progress</button>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; font-size:0.9rem; background:white; padding:8px 18px; border-radius:50px; box-shadow:var(--shadow-soft); border:2px solid var(--pink-100);">
+          <input type="checkbox" id="starredOnly" onchange="updateStarredToggle()" style="width:18px; height:18px; accent-color:var(--pink-500);">
+          ⭐ Study starred only
+        </label>
+        <span id="starredCount" style="font-size:0.85rem; color:var(--text-soft); font-weight:600;"></span>
+      </div>
+
+      <div class="mode-grid">
+        <div class="mode-card" onclick="startStudy()">
+          <div class="icon">📖</div>
+          <h3 style="font-size:1.1rem; margin-bottom:4px;">Study</h3>
+          <p style="font-size:0.82rem; color:var(--text-soft);">Flip cards & SRS</p>
+        </div>
+        <div class="mode-card" onclick="startMatch()">
+          <div class="icon">🧩</div>
+          <h3 style="font-size:1.1rem; margin-bottom:4px;">Match</h3>
+          <p style="font-size:0.82rem; color:var(--text-soft);">6 cards · Wheel scroll</p>
+        </div>
+        <div class="mode-card" onclick="startAsteroid()">
+          <div class="icon">☄️</div>
+          <h3 style="font-size:1.1rem; margin-bottom:4px;">Asteroid</h3>
+          <p style="font-size:0.82rem; color:var(--text-soft);">2 at a time · Chill mode</p>
+        </div>
+      </div>
+
+      <div style="margin-top:28px;">
+        <h3 style="font-size:1.05rem; margin-bottom:12px;">
+          📝 Cards <span id="cardListCount" style="font-size:0.82rem; color:var(--text-soft); font-weight:500;"></span>
+        </h3>
+        <div id="cardList" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </div>
+
+    <!-- STUDY -->
+    <div id="study" class="screen">
+      <div class="top-bar">
+        <button class="back-btn" onclick="showScreen('deckDetail')">← Back</button>
+        <span id="studyProgress" style="font-weight:700; color:var(--text-soft); background:white; padding:4px 14px; border-radius:50px; border:1px solid var(--pink-100);"></span>
+        <button class="btn btn-secondary btn-sm" onclick="restartStudy()">Restart</button>
+      </div>
+
+      <div style="height:8px; background:var(--pink-100); border-radius:10px; overflow:hidden; margin-bottom:20px;">
+        <div id="studyBar" style="height:100%; width:0%; background:linear-gradient(90deg, var(--pink-400), #c77dff); transition:width 0.3s ease;"></div>
+      </div>
+
+      <div id="studyBadge" style="display:flex; justify-content:center; gap:8px; margin-bottom:12px; min-height:26px;"></div>
+
+      <!-- Slide wrapper prevents peek of next card's back -->
+      <div class="flashcard-wrapper">
+        <div id="flashcardSlider" class="flashcard-slider">
+          <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="flashcard-face flashcard-front">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--pink-400); margin-bottom:12px;">Term</span>
+              <div id="cardFront" style="font-size:1.8rem; font-weight:700; line-height:1.3; max-width:100%; word-break:break-word;"></div>
+              <div style="margin-top:20px; font-size:0.85rem; color:var(--text-soft); opacity:0.8;">Tap card or space to flip ✨</div>
+            </div>
+            <div class="flashcard-face flashcard-back">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#c77dff; margin-bottom:12px;">Definition</span>
+              <div id="cardBack" class="cute-scrollbar" style="font-size:1.15rem; font-weight:600; line-height:1.4; max-height:190px; overflow-y:auto; word-break:break-word;"></div>
+              <div style="margin-top:16px; font-size:0.8rem; color:var(--text-soft);">Rate how well you knew it below 👇</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:12px; margin-bottom:14px;">
+        <button class="btn btn-primary" onclick="flipCard()">Flip Card ✨</button>
+        <button class="btn btn-secondary" onclick="skipCard()" title="Move this card to the back without rating it">Skip →</button>
+      </div>
+
+      <div id="srsButtons" style="display:none; justify-content:center; gap:12px; margin-top:10px; flex-wrap:wrap;">
+        <button class="btn" style="background:#ffe8f0; color:#b84d6e; border:2px solid #ffb3c9;" onclick="rateCard('again')">🔁 Again</button>
+        <button class="btn" style="background:#d4f5e0; color:#1a5c38; border:2px solid #6bcf8e;" onclick="rateCard('ok')">😊 Ok</button>
+      </div>
+      <p style="text-align:center; margin-top:12px; color:var(--text-soft); font-size:0.78rem; line-height:1.5;">
+        <strong>Again</strong> = show me more often · <strong>Ok</strong> = got it<br>
+        Keys: Space flips · 1 Again · 2 Ok · → skips
+      </p>
+    </div>
+
+    <!-- MATCH -->
+    <div id="match" class="screen">
+      <div class="top-bar">
+        <button class="back-btn" onclick="showScreen('deckDetail')">← Back</button>
+        <h2 style="font-size:1.15rem;">Match 🧩</h2>
+        <button class="btn btn-secondary btn-sm" onclick="startMatch()">Restart</button>
+      </div>
+
+      <div style="display:flex; justify-content:center; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+        <div style="background:white; padding:4px 8px; border-radius:50px; border:1px solid var(--pink-200); display:flex; gap:4px;">
+          <button id="matchLimit6" class="btn btn-sm btn-primary" style="padding:4px 12px; border-radius:50px; font-weight:700;" onclick="setMatchLimit(6)">6 Cards 💕</button>
+          <button id="matchLimit12" class="btn btn-sm btn-secondary" style="padding:4px 12px; border-radius:50px; font-weight:700;" onclick="setMatchLimit(12)">12 Cards 🧩</button>
+        </div>
+        <div class="badge">Moves: <span id="matchMoves" style="color:var(--pink-500);">0</span></div>
+        <div class="badge">Matched: <span id="matchMatched" style="color:#2b8a3e;">0</span> / <span id="matchTotal">3</span></div>
+      </div>
+
+      <p style="text-align:center; font-size:0.8rem; color:var(--text-soft); margin-bottom:12px;">
+        Tip: scroll inside a card to read longer text · tap a selected card again to unselect it
+      </p>
+
+      <div class="match-board grid-6" id="matchBoard"></div>
+    </div>
+
+    <!-- ASTEROID -->
+    <div id="asteroid" class="screen">
+      <div class="top-bar">
+        <button class="back-btn" onclick="endAsteroid(); showScreen('deckDetail')">← Back</button>
+        <h2 style="font-size:1.15rem;">Asteroid Arcade ☄️</h2>
+        <button class="btn btn-secondary btn-sm" onclick="startAsteroid()">Restart</button>
+      </div>
+
+      <!-- Settings HUD -->
+      <div style="background:rgba(255,255,255,0.85); padding:10px 16px; border-radius:20px; border:1px solid var(--pink-200); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <button id="challengeBtn" class="btn btn-sm btn-secondary" onclick="toggleChallengeMode()" style="font-weight:700;">
+          🌸 Chill Practice (No Lives)
+        </button>
+        <div style="display:flex; align-items:center; gap:6px; font-size:0.82rem; font-weight:600; color:var(--text-soft);">
+          <span>Speed:</span>
+          <button id="speedGentle" class="btn btn-sm" style="padding:4px 10px; background:var(--pink-100); color:var(--pink-500); font-weight:700;" onclick="setAstroSpeed('gentle')">Gentle 🌸</button>
+          <button id="speedNormal" class="btn btn-sm btn-secondary" style="padding:4px 10px; font-weight:700;" onclick="setAstroSpeed('normal')">Normal ⚡</button>
+        </div>
+      </div>
+
+      <div class="game-hud">
+        <div class="badge">Score: <span id="astroScore" style="color:var(--pink-500);">0</span></div>
+        <div class="badge" id="astroLivesBadge">Lives: <span style="color:#2b8a3e;">∞ Chill Mode</span></div>
+        <div class="badge">Active: <span id="astroActiveCount" style="color:var(--pink-500);">0</span> / 2</div>
+      </div>
+
+      <div class="asteroid-area" id="asteroidArea">
+        <div class="stars"></div>
+      </div>
+
+      <div id="astroTarget" style="text-align:center; margin:10px 0 8px; font-weight:700; font-size:1.05rem; color:var(--pink-500); min-height:30px;"></div>
+      <div id="astroOptions" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+      <p style="text-align:center; margin-top:12px; color:var(--text-soft); font-size:0.8rem;">
+        Click an asteroid to target it, then choose the matching definition below!
+      </p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <div style="font-size:3.5rem; margin-bottom:10px;" id="overlayEmoji">🎉</div>
+      <h2 id="overlayTitle" style="color:var(--pink-500); margin-bottom:8px;"></h2>
+      <p id="overlayMsg" style="color:var(--text-soft); margin-bottom:20px; font-size:0.95rem;"></p>
+      <div id="overlayActions" style="display:flex; justify-content:center; gap:8px;"></div>
+    </div>
+  </div>
+
+<script>
+  // Starter decks
+  const DEFAULT_DATA = [
+    {
+      id: 'japanese-starter',
+      name: 'Japanese Vocab 💕',
+      cards: [
+        { id: 'c1', term: 'いいえ', def: "no; you're welcome (polite denial or modest deflection)", starred: true },
+        { id: 'c2', term: '鉛筆 / えんぴつ', def: 'pencil — wooden graphite instrument used for sketching and notes', starred: false },
+        { id: 'c3', term: '学生 / がくせい', def: 'student — someone studying at school, college, or university', starred: true },
+        { id: 'c4', term: 'ありがとう', def: 'thank you (polite and friendly gratitude)', starred: false },
+        { id: 'c5', term: '可愛い / かわいい', def: 'cute, adorable, lovable, or charming', starred: true },
+        { id: 'c6', term: '桜 / さくら', def: 'cherry blossom (iconic pink spring flowers)', starred: true },
+        { id: 'c7', term: '猫 / ねこ', def: 'cat — affectionate four-legged companion animal', starred: false },
+        { id: 'c8', term: '本 / ほん', def: 'book — collection of pages bound with stories or knowledge', starred: false }
+      ]
+    }
+  ];
+
+  // 100% Cookie-free, safe offline storage with in-memory fallback.
+  // Never uses cookies, and never throws SecurityError on iOS/Safari/Private Browsing.
+  const SafeStorage = {
+    _mem: {},
+    get(key, fallback) {
+      try {
+        if (typeof window !== 'undefined' && 'localStorage' in window) {
+          const item = window.localStorage.getItem(key);
+          if (item) return JSON.parse(item);
+        }
+      } catch (e) {
+        // Storage restricted or disabled in Safari/iOS private browsing
+      }
+      return this._mem[key] !== undefined ? this._mem[key] : fallback;
+    },
+    set(key, value) {
+      this._mem[key] = value;
+      try {
+        if (typeof window !== 'undefined' && 'localStorage' in window) {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        }
+      } catch (e) {
+        // Storage restricted, safe in-memory fallback
+      }
+    }
+  };
+
+  // ============================================================
+  //  SMART SRS  (shared by Study, Match and Asteroid)
+  //  Every card keeps its own history in card.srs:
+  //    box    0-6   how well it is known (Leitner box)
+  //    reps         total times answered       correct / wrong  counters
+  //    hard   0-10  "trouble score": goes up when you miss it, down when you get it
+  //    due          timestamp when the card may be promoted again (spaced repetition)
+  //  Levels:  New (never answered) -> Familiar (box 1-3) -> Learned (box 4-5) -> Mastered (box 6)
+  //  Learned needs 4 right in a row. Mastered needs correct answers on spaced-out days
+  //  (1 day, then 7 days later), so cramming can't fake "never forget".
+  // ============================================================
+  const DAY_MS = 86400000;
+  const BOX_MAX = 6;
+  const BOX_REST_DAYS = [0, 0, 0, 0, 1, 7, 30]; // how long a card rests after reaching each box
+
+  const LEVELS = {
+    new:      { label: 'New',      emoji: '🆕', bg: '#f3e8ff', fg: '#8a4fc7' },
+    familiar: { label: 'Familiar', emoji: '🌱', bg: '#fff3cd', fg: '#8a6100' },
+    learned:  { label: 'Learned',  emoji: '🌸', bg: '#dff7e8', fg: '#1f6b43' },
+    mastered: { label: 'Mastered', emoji: '👑', bg: '#ffd9e6', fg: '#b3194f' }
+  };
+  const LEVEL_WEIGHT = { new: 1.6, familiar: 2.2, learned: 1.0, mastered: 0.3 };
+
+  function newSrs() {
+    return { box: 0, reps: 0, correct: 0, wrong: 0, streak: 0, hard: 0, last: 0, due: 0 };
+  }
+
+  function ensureSrs(card) {
+    if (!card.srs || typeof card.srs !== 'object') card.srs = newSrs();
+    const base = newSrs();
+    Object.keys(base).forEach(k => { if (typeof card.srs[k] !== 'number' || isNaN(card.srs[k])) card.srs[k] = base[k]; });
+    return card.srs;
+  }
+
+  function cardLevel(card) {
+    const s = ensureSrs(card);
+    if (!s.reps) return 'new';
+    if (s.box >= BOX_MAX) return 'mastered';
+    if (s.box >= 4) return 'learned';
+    return 'familiar';
+  }
+
+  function isHardCard(card) {
+    return ensureSrs(card).hard >= 2;
+  }
+
+  // result: 'ok' (knew it) | 'again' (shaky, show it again) | 'hard' (didn't know it) | 'miss' (wrong in a game)
+  function recordAnswer(card, result) {
+    const s = ensureSrs(card);
+    const now = Date.now();
+    s.reps++;
+    s.last = now;
+
+    if (result === 'ok') {
+      s.correct++;
+      s.streak++;
+      s.hard = Math.max(0, s.hard - 1);
+      // Boxes 0-3 climb on every right answer. From box 4 up the card must have rested first.
+      if (s.box < 4 || now >= s.due) {
+        if (s.box < BOX_MAX) s.box++;
+        s.due = now + BOX_REST_DAYS[s.box] * DAY_MS;
+      }
+    } else if (result === 'again') {
+      s.streak = 0;
+      s.hard = Math.min(10, s.hard + 0.5);
+      s.box = Math.max(1, s.box - 1);
+      s.due = 0;
+    } else { // 'hard' or 'miss'
+      s.wrong++;
+      s.streak = 0;
+      s.hard = Math.min(10, s.hard + (result === 'hard' ? 2 : 1));
+      s.box = result === 'hard' ? Math.max(1, Math.floor(s.box / 2)) : Math.max(1, s.box - 1);
+      s.due = 0;
+    }
+    saveToStorage();
+  }
+
+  // How likely a card is to be picked: hard cards a lot more, new/familiar more than learned,
+  // mastered cards that are still "resting" hardly ever.
+  function cardWeight(card) {
+    const s = ensureSrs(card);
+    let w = LEVEL_WEIGHT[cardLevel(card)] * (1 + s.hard * 1.2);
+    if (s.reps && Date.now() < s.due) w *= 0.35;
+    return w;
+  }
+
+  // Weighted random order (Efraimidis-Spirakis): random every time, but heavy cards tend to come first
+  function weightedShuffle(cards, weightFn = cardWeight) {
+    return cards
+      .map(c => ({ c, k: Math.pow(Math.random(), 1 / Math.max(0.01, weightFn(c))) }))
+      .sort((a, b) => b.k - a.k)
+      .map(x => x.c);
+  }
+
+  function weightedSample(cards, n, weightFn = cardWeight) {
+    return weightedShuffle(cards, weightFn).slice(0, n);
+  }
+
+  function chipHtml(text, bg, fg) {
+    return `<span style="display:inline-block; background:${bg}; color:${fg}; font-size:0.74rem; font-weight:700; padding:3px 11px; border-radius:20px; white-space:nowrap;">${text}</span>`;
+  }
+  function levelChip(card) {
+    const L = LEVELS[cardLevel(card)];
+    return chipHtml(`${L.emoji} ${L.label}`, L.bg, L.fg);
+  }
+  function hardChip() {
+    return chipHtml('🔥 Hard', '#ffe0e6', '#9b2c3e');
+  }
+
+  let decks = SafeStorage.get('pastelDecks_standalone', DEFAULT_DATA);
+  decks.forEach(d => (d.cards || []).forEach(ensureSrs));
+  let currentDeckId = null;
+  let editingId = null;
+  let currentCards = [];
+
+  // Study state
+  let studyIndex = 0;
+  let studyFlipped = false;
+  let isNavigating = false;
+
+  // Match state
+  let matchLimit = 6; // DEFAULT: 6 CARDS TOTAL
+  let matchTiles = [];
+  let selectedTiles = [];
+  let matchMoves = 0;
+  let matchMatched = 0;
+  let matchLocked = false;
+  let matchMiss = new Set(); // cards already counted as missed this game
+
+  // Asteroid state
+  let challengeMode = false; // DEFAULT: NO LIVES (Chill Practice)
+  let astroSpeed = 'gentle'; // DEFAULT: GENTLE, NOT TOO FAST
+  let astroScore = 0;
+  let astroLives = 3;
+  let astroActive = [];
+  let astroTargetIdx = -1;
+  let astroInterval = null;
+  let astroSpawnTimer = null;
+  let astroSeen = new Set(); // cards already shown this game (unseen cards get a boost)
+  let astroLast = null;
+
+  // Web Audio Cute Sound Synthesizer
+  let audioCtx = null;
+  let soundEnabled = true;
+
+  function getAudioCtx() {
+    try {
+      if (!audioCtx) {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtxClass) audioCtx = new AudioCtxClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function playCuteSuccess() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const notes = [
+      { freq: 1046.5, delay: 0 },
+      { freq: 1318.5, delay: 0.075 },
+      { freq: 1568.0, delay: 0.15 }
+    ];
+    notes.forEach(n => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.freq, now + n.delay);
+      gain.gain.setValueAtTime(0, now + n.delay);
+      gain.gain.linearRampToValueAtTime(0.14, now + n.delay + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + n.delay + 0.35);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + n.delay);
+      osc.stop(now + n.delay + 0.38);
+    });
+  }
+
+  function playCuteVictory() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const notes = [
+      { freq: 783.99, delay: 0 },
+      { freq: 1046.5, delay: 0.09 },
+      { freq: 1318.5, delay: 0.18 },
+      { freq: 1567.98, delay: 0.27 },
+      { freq: 2093.0, delay: 0.38 }
+    ];
+    notes.forEach(n => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.freq, now + n.delay);
+      gain.gain.setValueAtTime(0, now + n.delay);
+      gain.gain.linearRampToValueAtTime(0.16, now + n.delay + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + n.delay + 0.45);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + n.delay);
+      osc.stop(now + n.delay + 0.5);
+    });
+  }
+
+  function saveToStorage() {
+    SafeStorage.set('pastelDecks_standalone', decks);
+  }
+
+  function exportDecksJson() {
+    try {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(decks, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", "pastel-decks-backup.json");
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      toast('Decks exported! 💖 (Offline JSON)');
+    } catch (e) {
+      toast('Export error: ' + (e.message || 'failed'));
+    }
+  }
+
+  function importDecksJson(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const imported = JSON.parse(e.target.result);
+        const valid = Array.isArray(imported) && imported.length > 0 && imported.every(d =>
+          d && typeof d.name === 'string' && Array.isArray(d.cards) &&
+          d.cards.every(c => c && typeof c.term === 'string' && typeof c.def === 'string'));
+        if (valid) {
+          imported.forEach((d, i) => {
+            if (!d.id) d.id = `deck-restored-${Date.now()}-${i}`;
+            d.cards.forEach((c, j) => { if (!c.id) c.id = `c-restored-${Date.now()}-${i}-${j}`; ensureSrs(c); });
+          });
+          decks = imported;
+          saveToStorage();
+          renderHome();
+          toast('Decks restored! 💕 (' + imported.length + ' decks)');
+        } else {
+          toast('Invalid deck backup file format');
+        }
+      } catch (err) {
+        toast('Could not read JSON backup file');
+      }
+      event.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'home') renderHome();
+    if (id === 'deckDetail') renderCardList();
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function showOverlay(emoji, title, msg, buttons) {
+    document.getElementById('overlayEmoji').textContent = emoji;
+    document.getElementById('overlayTitle').textContent = title;
+    document.getElementById('overlayMsg').textContent = msg;
+    const actions = document.getElementById('overlayActions');
+    actions.innerHTML = '';
+    buttons.forEach(b => {
+      const btn = document.createElement('button');
+      btn.className = b.primary ? 'btn btn-primary' : 'btn btn-secondary';
+      btn.textContent = b.text;
+      btn.onclick = () => { closeOverlay(); b.action(); };
+      actions.appendChild(btn);
+    });
+    document.getElementById('overlay').classList.add('show');
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show');
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Fisher-Yates shuffle (returns a new array, original untouched)
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // CJK detector
+  function isCJK(str) {
+    return /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf\uac00-\ud7af]/.test(str);
+  }
+
+  // Font sizing helper for match tiles so Japanese words look large and prominent
+  function getTileTypography(text) {
+    const len = text.trim().length;
+    const cjk = isCJK(text);
+
+    if (cjk) {
+      if (len <= 4) return 'font-size: 1.65rem; font-weight: 700; letter-spacing: 0.04em;';
+      if (len <= 9) return 'font-size: 1.35rem; font-weight: 700; letter-spacing: 0.02em;';
+      if (len <= 16) return 'font-size: 1.12rem; font-weight: 700;';
+      if (len <= 28) return 'font-size: 0.95rem; font-weight: 600;';
+      return 'font-size: 0.85rem; font-weight: 500;';
+    }
+
+    if (len <= 8) return 'font-size: 1.25rem; font-weight: 700;';
+    if (len <= 18) return 'font-size: 1.05rem; font-weight: 600;';
+    if (len <= 35) return 'font-size: 0.92rem; font-weight: 600;';
+    return 'font-size: 0.82rem; font-weight: 500;';
+  }
+
+  // Dynamic circle sizing for Asteroid terms so letters/words NEVER spill outside
+  function calculateAsteroidMetrics(term) {
+    const trimmed = term.trim();
+    const len = trimmed.length;
+    const words = trimmed.split(/[\s/—–-]+/).filter(Boolean);
+    const wordCount = words.length;
+    const maxWordLen = words.reduce((max, w) => Math.max(max, w.length), 0);
+
+    let diameter = 88;
+    let fontSize = '0.95rem';
+
+    if (len <= 4 && wordCount <= 1) {
+      diameter = 88;
+      fontSize = '0.96rem';
+    } else if (len <= 8 && wordCount <= 2) {
+      diameter = 105;
+      fontSize = '0.90rem';
+    } else if (len <= 14) {
+      diameter = 124 + (wordCount > 2 ? 12 : 0) + (maxWordLen > 8 ? 8 : 0);
+      fontSize = '0.84rem';
+    } else if (len <= 24) {
+      diameter = 144 + (wordCount > 3 ? 14 : 0);
+      fontSize = '0.78rem';
+    } else if (len <= 38) {
+      diameter = 168 + (wordCount > 4 ? 14 : 0);
+      fontSize = '0.74rem';
+    } else {
+      diameter = Math.min(210, 175 + (len - 38) * 1.3);
+      fontSize = '0.70rem';
+    }
+
+    return { diameter, fontSize };
+  }
+
+  // --- HOME ---
+  function renderHome() {
+    const list = document.getElementById('deckList');
+    const empty = document.getElementById('emptyState');
+    list.innerHTML = '';
+
+    if (decks.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    decks.forEach(d => {
+      const starred = d.cards.filter(c => c.starred).length;
+      const el = document.createElement('div');
+      el.className = 'deck-card';
+      el.innerHTML = `
+        <div class="deck-actions">
+          <button class="btn btn-icon btn-secondary" onclick="event.stopPropagation(); editDeck('${d.id}')" title="Edit">✏️</button>
+          <button class="btn btn-icon btn-secondary" style="color:#ff4d6d;" onclick="event.stopPropagation(); deleteDeck('${d.id}')" title="Delete">🗑️</button>
+        </div>
+        <h3>${escapeHtml(d.name)}</h3>
+        <p>${d.cards.length} cards ${starred ? `· ⭐ ${starred}` : ''}</p>
+        <span class="count">${d.cards.length} terms</span>
+      `;
+      el.onclick = () => openDeck(d.id);
+      list.appendChild(el);
+    });
+  }
+
+  function openDeck(id) {
+    currentDeckId = id;
+    const deck = decks.find(d => d.id === id);
+    if (!deck) return;
+    deck.cards.forEach(c => { if (c.starred === undefined) c.starred = false; ensureSrs(c); });
+    document.getElementById('detailTitle').textContent = deck.name;
+    document.getElementById('detailCount').textContent = `${deck.cards.length} cards ready to study`;
+    document.getElementById('starredOnly').checked = false;
+    renderCardList();
+    updateStarredToggle();
+    showScreen('deckDetail');
+  }
+
+  function renderLevelSummary(deck) {
+    const counts = { new: 0, familiar: 0, learned: 0, mastered: 0 };
+    let hard = 0;
+    deck.cards.forEach(c => { counts[cardLevel(c)]++; if (isHardCard(c)) hard++; });
+    let html = Object.keys(LEVELS).map(k => chipHtml(`${LEVELS[k].emoji} ${counts[k]} ${LEVELS[k].label}`, LEVELS[k].bg, LEVELS[k].fg)).join('');
+    if (hard) html += hardChip().replace('🔥 Hard', `🔥 ${hard} Hard`);
+    document.getElementById('levelSummary').innerHTML = html;
+  }
+
+  function renderCardList() {
+    const deck = decks.find(d => d.id === currentDeckId);
+    if (!deck) return;
+    deck.cards.forEach(ensureSrs);
+    const list = document.getElementById('cardList');
+    const starred = deck.cards.filter(c => c.starred).length;
+    document.getElementById('cardListCount').textContent = `(${deck.cards.length} total · ${starred} starred)`;
+    renderLevelSummary(deck);
+    list.innerHTML = '';
+
+    deck.cards.forEach((c, i) => {
+      const s = c.srs;
+      const el = document.createElement('div');
+      el.style.cssText = `background:white; border-radius:16px; padding:12px 16px; box-shadow:var(--shadow-soft); border:2px solid ${c.starred ? 'var(--pink-300)' : 'transparent'}; display:flex; align-items:flex-start; gap:12px;`;
+      el.innerHTML = `
+        <button onclick="toggleStar(${i})" style="background:none; border:none; font-size:1.3rem; cursor:pointer; padding:0; line-height:1; flex-shrink:0;">
+          ${c.starred ? '⭐' : '☆'}
+        </button>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:700; font-size:0.98rem; margin-bottom:4px; word-break:break-word;">${escapeHtml(c.term)}</div>
+          <div style="font-size:0.85rem; color:var(--text-soft); word-break:break-word;">${escapeHtml(c.def)}</div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-top:8px;">
+            ${levelChip(c)}${isHardCard(c) ? hardChip() : ''}
+            ${s.reps ? `<span style="font-size:0.72rem; color:var(--text-soft);">✓ ${s.correct} · ✗ ${s.wrong}</span>` : ''}
+          </div>
+        </div>
+      `;
+      list.appendChild(el);
+    });
+  }
+
+  function resetProgress() {
+    const deck = decks.find(d => d.id === currentDeckId);
+    if (!deck) return;
+    if (!confirm('Reset learning progress for every card in this deck? They will all be New again. 🌱')) return;
+    deck.cards.forEach(c => { c.srs = newSrs(); });
+    saveToStorage();
+    renderCardList();
+    toast('Progress reset 🌸');
+  }
+
+  function toggleStar(index) {
+    const deck = decks.find(d => d.id === currentDeckId);
+    if (!deck) return;
+    deck.cards[index].starred = !deck.cards[index].starred;
+    saveToStorage();
+    renderCardList();
+    updateStarredToggle();
+  }
+
+  function updateStarredToggle() {
+    const deck = decks.find(d => d.id === currentDeckId);
+    if (!deck) return;
+    const starred = deck.cards.filter(c => c.starred).length;
+    document.getElementById('starredCount').textContent = starred ? `(${starred} starred)` : '(0 starred)';
+  }
+
+  function getActiveCards() {
+    const deck = decks.find(d => d.id === currentDeckId);
+    if (!deck) return [];
+    const onlyStarred = document.getElementById('starredOnly').checked;
+    if (onlyStarred) {
+      const starred = deck.cards.filter(c => c.starred);
+      if (starred.length === 0) {
+        toast('No starred cards yet ⭐');
+        return null;
+      }
+      return starred;
+    }
+    return [...deck.cards];
+  }
+
+  function deleteDeck(id) {
+    if (!confirm('Delete this deck? 💔')) return;
+    decks = decks.filter(d => d.id !== id);
+    saveToStorage();
+    renderHome();
+    toast('Deck deleted 🌸');
+  }
+
+  // --- CREATE / EDIT ---
+  function showCreate() {
+    editingId = null;
+    document.getElementById('createTitle').textContent = 'New Deck';
+    document.getElementById('deckName').value = '';
+    document.getElementById('pairsContainer').innerHTML = '';
+    document.getElementById('importText').value = '';
+    document.getElementById('importResult').textContent = '';
+    addPair();
+    addPair();
+    showScreen('create');
+  }
+
+  function editDeck(id) {
+    const deck = decks.find(d => d.id === id);
+    if (!deck) return;
+    currentDeckId = id;
+    editingId = id;
+    document.getElementById('createTitle').textContent = 'Edit Deck';
+    document.getElementById('deckName').value = deck.name;
+    document.getElementById('pairsContainer').innerHTML = '';
+    document.getElementById('importText').value = '';
+    document.getElementById('importResult').textContent = '';
+    deck.cards.forEach(c => addPair(c.term, c.def, c.id));
+    showScreen('create');
+  }
+
+  function editCurrentDeck() {
+    editDeck(currentDeckId);
+  }
+
+  // Builds inputs with the DOM (not innerHTML) so quotes/special characters in cards never break the form.
+  // cardId lets us keep a card's star + learning progress when the deck is saved.
+  function addPair(term = '', def = '', cardId = '') {
+    const container = document.getElementById('pairsContainer');
+    const div = document.createElement('div');
+    div.className = 'card-pair';
+    if (cardId) div.dataset.cardId = cardId;
+    div.innerHTML = `
+      <button class="remove-pair" type="button" title="Remove card" onclick="this.parentElement.remove()">✕</button>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="form-group" style="margin:0;">
+          <label>Term</label>
+          <input type="text" class="term-input" placeholder="Term">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Definition</label>
+          <input type="text" class="def-input" placeholder="Definition">
+        </div>
+      </div>
+    `;
+    div.querySelector('.term-input').value = term;
+    div.querySelector('.def-input').value = def;
+    container.appendChild(div);
+    return div;
+  }
+
+  function pairIsEmpty(p) {
+    return !p.querySelector('.term-input').value.trim() && !p.querySelector('.def-input').value.trim();
+  }
+
+  // Import ADDS to whatever cards are already in the form (it never wipes them).
+  function doImport() {
+    const raw = document.getElementById('importText').value.trim();
+    const resultEl = document.getElementById('importResult');
+    if (!raw) {
+      toast('Paste some cards first 💕');
+      return;
+    }
+    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const found = [];
+    let skipped = 0;
+
+    for (const line of lines) {
+      // Prefer " - " (spaces around the dash) so hyphenated words like "well-known" stay intact;
+      // fall back to a tab, a colon, or a bare dash.
+      const m = line.match(/^(.+?)\s+[-–—]\s+(.+)$/) ||
+                line.match(/^(.+?)\s*\t\s*(.+)$/) ||
+                line.match(/^(.+?)\s*[:：]\s*(.+)$/) ||
+                line.match(/^(.+?)\s*[-–—]\s*(.+)$/);
+      if (m && m[1].trim() && m[2].trim()) {
+        found.push({ term: m[1].trim(), def: m[2].trim() });
+      } else {
+        skipped++;
+      }
+    }
+
+    if (!found.length) {
+      resultEl.textContent = '⚠️ No valid pairs found. Use the format: term - definition';
+      toast('No valid pairs found. Format: term - def');
+      return;
+    }
+
+    const container = document.getElementById('pairsContainer');
+    // Drop untouched blank rows so imported cards don't sit under empty ones
+    container.querySelectorAll('.card-pair').forEach(p => { if (pairIsEmpty(p)) p.remove(); });
+
+    // Skip cards that are already in the deck (same term + definition)
+    const existing = new Set();
+    container.querySelectorAll('.card-pair').forEach(p => {
+      existing.add(p.querySelector('.term-input').value.trim() + '\u0000' + p.querySelector('.def-input').value.trim());
+    });
+
+    let added = 0, dupes = 0, firstNew = null;
+    found.forEach(p => {
+      const key = p.term + '\u0000' + p.def;
+      if (existing.has(key)) { dupes++; return; }
+      existing.add(key);
+      const row = addPair(p.term, p.def);
+      if (!firstNew) firstNew = row;
+      added++;
+    });
+
+    const total = container.querySelectorAll('.card-pair').length;
+    let msg = added ? `✅ Added ${added} new card${added === 1 ? '' : 's'} (deck now has ${total})` : 'No new cards added';
+    if (dupes) msg += ` · ${dupes} duplicate${dupes === 1 ? '' : 's'} skipped`;
+    if (skipped) msg += ` · ${skipped} line${skipped === 1 ? '' : 's'} not understood`;
+    msg += ' — press Save Deck 💖 to keep them.';
+    resultEl.textContent = msg;
+    toast(added ? `Added ${added} card${added === 1 ? '' : 's'} 💕` : 'Those cards are already in the deck');
+
+    document.getElementById('importText').value = ''; // lines were processed, so clear the box
+    if (firstNew) firstNew.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function saveDeck() {
+    const name = document.getElementById('deckName').value.trim();
+    if (!name) { toast('Please give your deck a name'); return; }
+
+    if (document.getElementById('importText').value.trim()) {
+      toast('You have pasted text that is not imported yet — press Import Cards first 💕');
+      return;
+    }
+
+    const deck = editingId ? decks.find(d => d.id === editingId) : null;
+    const pairs = [];
+    document.querySelectorAll('#pairsContainer .card-pair').forEach(p => {
+      const term = p.querySelector('.term-input').value.trim();
+      const def = p.querySelector('.def-input').value.trim();
+      if (!term || !def) return;
+      // Keep star + learning progress of existing cards (matched by id, falling back to term)
+      const oldId = p.dataset.cardId;
+      const old = deck ? (deck.cards.find(c => c.id === oldId) || deck.cards.find(c => c.term === term)) : null;
+      pairs.push({
+        id: old && old.id ? old.id : `c-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        term,
+        def,
+        starred: old ? !!old.starred : false,
+        srs: old && old.srs ? old.srs : newSrs()
+      });
+    });
+
+    if (pairs.length < 1) {
+      toast('Add at least 1 card with a term and a definition 💕');
+      return;
+    }
+
+    let targetId;
+    if (deck) {
+      deck.name = name;
+      deck.cards = pairs;
+      targetId = deck.id;
+      toast('Deck updated 💖');
+    } else {
+      targetId = `deck-${Date.now()}`;
+      decks.unshift({ id: targetId, name, cards: pairs });
+      toast('Deck created 🌸');
+    }
+
+    editingId = null;
+    saveToStorage();
+    openDeck(targetId);
+  }
+
+  // --- STUDY MODE (smart SRS queue) ---
+  // The round is a queue. "Ok" removes a card, "Again" brings it back a bit later,
+  // "Hard" brings it back soon and it must be recalled twice before the round ends.
+  let studyPool = [];
+  let studyQueue = [];
+  let studyTotal = 0;
+  let studyDone = 0;
+  let studyNeed = new Map();   // card -> how many more "Ok" answers it needs this round
+  let studyMissed = new Set(); // cards rated Hard/Again at least once this round
+
+  function beginStudyRound(cards) {
+    studyPool = cards;
+    const now = Date.now();
+    // Mastered cards that are still resting stay out of the way, unless nothing else is left
+    let pool = cards.filter(c => !(cardLevel(c) === 'mastered' && now < c.srs.due));
+    const resting = cards.length - pool.length;
+    if (!pool.length) pool = cards;
+    studyQueue = weightedShuffle(pool); // random order, hard cards tend to come first
+    studyTotal = studyQueue.length;
+    studyDone = 0;
+    studyNeed = new Map();
+    studyMissed = new Set();
+    studyFlipped = false;
+    isNavigating = false;
+    const slider = document.getElementById('flashcardSlider');
+    if (slider) slider.className = 'flashcard-slider';
+    if (resting && resting < cards.length) toast(`👑 ${resting} mastered card${resting === 1 ? ' is' : 's are'} resting until due`);
+  }
+
+  function startStudy() {
+    const cards = getActiveCards();
+    if (!cards || cards.length === 0) return;
+    beginStudyRound(cards);
+    showScreen('study');
+    renderStudyCard();
+  }
+
+  function restartStudy() {
+    if (!studyPool.length) return;
+    beginStudyRound(studyPool);
+    renderStudyCard();
+  }
+
+  function renderStudyCard() {
+    const card = studyQueue[0];
+    if (!card) return;
+    document.getElementById('cardFront').textContent = card.term;
+    document.getElementById('cardBack').textContent = card.def;
+    // un-flip instantly (no rotate animation) so the next card's answer is never glimpsed
+    const fc = document.getElementById('flashcard');
+    fc.style.transition = 'none';
+    fc.classList.remove('flipped');
+    void fc.offsetWidth;
+    fc.style.transition = '';
+    studyFlipped = false;
+    document.getElementById('srsButtons').style.display = 'none';
+    document.getElementById('studyProgress').textContent = `✓ ${studyDone} / ${studyTotal} · ${studyQueue.length} left`;
+    document.getElementById('studyBar').style.width = `${studyTotal ? (studyDone / studyTotal) * 100 : 0}%`;
+    document.getElementById('studyBadge').innerHTML = levelChip(card) + (isHardCard(card) ? hardChip() : '');
+  }
+
+  function flipCard() {
+    if (isNavigating || !studyQueue.length) return;
+    const cardEl = document.getElementById('flashcard');
+    cardEl.classList.toggle('flipped');
+    studyFlipped = !studyFlipped;
+    document.getElementById('srsButtons').style.display = studyFlipped ? 'flex' : 'none';
+  }
+
+  // Slide the current card away, then show whatever is first in the queue
+  function advanceStudy() {
+    isNavigating = true;
+    const slider = document.getElementById('flashcardSlider');
+    slider.className = 'flashcard-slider slide-out-left';
+    setTimeout(() => {
+      if (!studyQueue.length) {
+        slider.className = 'flashcard-slider';
+        isNavigating = false;
+        finishStudy();
+        return;
+      }
+      renderStudyCard();
+      slider.className = 'flashcard-slider slide-in-right';
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          slider.className = 'flashcard-slider';
+          isNavigating = false;
+        }, 30);
+      });
+    }, 180);
+  }
+
+  function requeueCurrent(gap) {
+    const card = studyQueue.shift();
+    studyQueue.splice(Math.min(gap, studyQueue.length), 0, card);
+  }
+
+  function rateCard(result) {
+    if (isNavigating || !studyFlipped || !studyQueue.length) return;
+    const card = studyQueue[0];
+    recordAnswer(card, result);
+
+    const need = studyNeed.get(card) || 0;
+    if (result === 'again' || result === 'hard') {
+      // "Again" = comes back more frequently (small gap)
+      studyMissed.add(card);
+      studyNeed.set(card, Math.max(1, need));
+      requeueCurrent(2); // show again soon
+    } else {
+      playCuteSuccess();
+      if (need > 1) {
+        studyNeed.set(card, need - 1);
+        requeueCurrent(4);
+      } else {
+        studyNeed.delete(card);
+        studyQueue.shift();
+        studyDone++;
+      }
+    }
+    advanceStudy();
+  }
+
+  function skipCard() {
+    if (isNavigating || !studyQueue.length) return;
+    if (studyQueue.length < 2) {
+      toast('This is the last card — rate it to finish 💕');
+      return;
+    }
+    studyQueue.push(studyQueue.shift());
+    advanceStudy();
+  }
+
+  function finishStudy() {
+    playCuteVictory();
+    document.getElementById('studyBar').style.width = '100%';
+    document.getElementById('studyProgress').textContent = `✓ ${studyTotal} / ${studyTotal} · done!`;
+    const first = studyTotal - studyMissed.size;
+    let msg = `${first} of ${studyTotal} card${studyTotal === 1 ? '' : 's'} right the first time.`;
+    if (studyMissed.size) msg += ` ${studyMissed.size} tricky one${studyMissed.size === 1 ? '' : 's'} will come back sooner next time 💪`;
+    showOverlay('🌟', 'Round complete!', msg, [
+      { text: 'Study Again ✨', primary: true, action: restartStudy },
+      { text: 'Back to Deck', primary: false, action: () => showScreen('deckDetail') }
+    ]);
+  }
+
+  // --- MATCH MODE (LIMITED TO 6 CARDS BY DEFAULT) ---
+  function setMatchLimit(n) {
+    matchLimit = n;
+    document.getElementById('matchLimit6').className = n === 6 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+    document.getElementById('matchLimit12').className = n === 12 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+    startMatch();
+  }
+
+  function startMatch() {
+    const cards = getActiveCards();
+    if (!cards || cards.length < 2) {
+      toast('Need at least 2 cards for Match');
+      return;
+    }
+
+    const pairCount = matchLimit === 6 ? 3 : 6;
+    const pairs = weightedSample(cards, pairCount); // hard / new cards are picked more often
+    matchMiss = new Set();
+
+    matchTiles = [];
+    pairs.forEach((c, i) => {
+      matchTiles.push({ id: `t${i}`, text: c.term, pairId: i, type: 'term', card: c });
+      matchTiles.push({ id: `d${i}`, text: c.def, pairId: i, type: 'def', card: c });
+    });
+
+    for (let i = matchTiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [matchTiles[i], matchTiles[j]] = [matchTiles[j], matchTiles[i]];
+    }
+
+    selectedTiles = [];
+    matchMoves = 0;
+    matchMatched = 0;
+    matchLocked = false;
+
+    document.getElementById('matchMoves').textContent = '0';
+    document.getElementById('matchMatched').textContent = '0';
+    document.getElementById('matchTotal').textContent = matchTiles.length / 2;
+
+    const board = document.getElementById('matchBoard');
+    board.className = 'match-board ' + (matchLimit === 6 ? 'grid-6' : 'grid-12');
+    board.innerHTML = '';
+
+    matchTiles.forEach((tile, idx) => {
+      const el = document.createElement('div');
+      el.className = 'match-tile';
+      el.dataset.idx = idx;
+
+      // Type label
+      const tag = document.createElement('div');
+      tag.style.cssText = 'font-size:10px; font-weight:700; text-transform:uppercase; text-align:left; color:' + (tile.type === 'term' ? 'var(--pink-400)' : '#c77dff');
+      tag.textContent = tile.type === 'term' ? 'Term' : 'Definition';
+
+      // Scrollable content wrapper with wheel scrolling & large typography for Japanese/fitting words
+      const content = document.createElement('div');
+      content.className = 'match-tile-content cute-scrollbar';
+      content.style.cssText += getTileTypography(tile.text);
+      const inner = document.createElement('span');
+      inner.textContent = tile.text;
+      content.appendChild(inner);
+      content.title = 'Scroll with mouse wheel to see more';
+
+      el.appendChild(tag);
+      el.appendChild(content);
+
+      el.onclick = () => selectMatchTile(idx);
+      board.appendChild(el);
+    });
+
+    showScreen('match');
+  }
+
+  function selectMatchTile(idx) {
+    if (matchLocked) return;
+    const tile = matchTiles[idx];
+    const el = document.querySelector(`.match-tile[data-idx="${idx}"]`);
+    if (el.classList.contains('matched')) return;
+
+    // Tap a selected card again to change your mind
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      selectedTiles = selectedTiles.filter(t => t.idx !== idx);
+      return;
+    }
+
+    el.classList.add('selected');
+    selectedTiles.push({ idx, tile, el });
+
+    if (selectedTiles.length === 2) {
+      matchMoves++;
+      document.getElementById('matchMoves').textContent = matchMoves;
+      matchLocked = true;
+
+      const [a, b] = selectedTiles;
+      if (a.tile.pairId === b.tile.pairId && a.tile.type !== b.tile.type) {
+        // Matched! Cute success sound
+        playCuteSuccess();
+        if (!matchMiss.has(a.tile.card)) recordAnswer(a.tile.card, 'ok'); // right with no earlier mistake
+
+        setTimeout(() => {
+          a.el.classList.remove('selected');
+          b.el.classList.remove('selected');
+          a.el.classList.add('matched');
+          b.el.classList.add('matched');
+          matchMatched++;
+          document.getElementById('matchMatched').textContent = matchMatched;
+          selectedTiles = [];
+          matchLocked = false;
+
+          if (matchMatched === matchTiles.length / 2) {
+            setTimeout(() => {
+              playCuteVictory();
+              showOverlay('🎉', 'Perfect Match!', `You matched all ${matchTiles.length} cards in ${matchMoves} moves!`, [
+                { text: 'Play Again 💕', primary: true, action: startMatch },
+                { text: 'Back to Deck', primary: false, action: () => showScreen('deckDetail') }
+              ]);
+            }, 350);
+          }
+        }, 320);
+      } else {
+        // Mismatch: completely silent, only visual shake!
+        if (a.tile.type !== b.tile.type) { // term+definition that don't belong together = real mistake
+          [a, b].forEach(t => {
+            if (!matchMiss.has(t.tile.card)) { matchMiss.add(t.tile.card); recordAnswer(t.tile.card, 'miss'); }
+          });
+        }
+        a.el.classList.add('wrong');
+        b.el.classList.add('wrong');
+        setTimeout(() => {
+          a.el.classList.remove('selected', 'wrong');
+          b.el.classList.remove('selected', 'wrong');
+          selectedTiles = [];
+          matchLocked = false;
+        }, 700);
+      }
+    }
+  }
+
+  // --- ASTEROID MODE (MAX 2 AT A TIME, DYNAMIC CIRCLES, CHALLENGE TOGGLE) ---
+  function toggleChallengeMode() {
+    challengeMode = !challengeMode;
+    const btn = document.getElementById('challengeBtn');
+    const badge = document.getElementById('astroLivesBadge');
+    if (challengeMode) {
+      btn.className = 'btn btn-sm btn-primary';
+      btn.textContent = '⚡ Challenge Mode: ON (3 Lives)';
+      badge.innerHTML = `Lives: <span style="color:#ff4d6d;">💖 💖 💖</span>`;
+    } else {
+      btn.className = 'btn btn-sm btn-secondary';
+      btn.textContent = '🌸 Chill Practice (No Lives)';
+      badge.innerHTML = `Lives: <span style="color:#2b8a3e;">∞ Chill Mode</span>`;
+    }
+    startAsteroid();
+  }
+
+  function setAstroSpeed(s) {
+    astroSpeed = s;
+    document.getElementById('speedGentle').style.background = s === 'gentle' ? 'var(--pink-100)' : 'white';
+    document.getElementById('speedNormal').style.background = s === 'normal' ? 'var(--pink-100)' : 'white';
+  }
+
+  function startAsteroid() {
+    const cards = getActiveCards();
+    if (!cards || cards.length < 2) {
+      toast('Need at least 2 cards for Asteroid');
+      return;
+    }
+
+    endAsteroid();
+    currentCards = cards;
+    astroScore = 0;
+    astroLives = 3;
+    astroActive = [];
+    astroTargetIdx = -1;
+    astroSeen = new Set();
+    astroLast = null;
+
+    document.getElementById('astroScore').textContent = '0';
+    document.getElementById('astroActiveCount').textContent = '0';
+    document.getElementById('astroLivesBadge').innerHTML = challengeMode
+      ? `Lives: <span style="color:#ff4d6d;">💖 💖 💖</span>`
+      : `Lives: <span style="color:#2b8a3e;">∞ Chill Mode</span>`;
+    document.getElementById('asteroidArea').querySelectorAll('.asteroid').forEach(a => a.remove());
+    document.getElementById('astroTarget').textContent = '';
+    document.getElementById('astroOptions').innerHTML = '';
+    showScreen('asteroid');
+
+    spawnAsteroid();
+    astroSpawnTimer = setInterval(spawnAsteroid, 2600);
+    astroInterval = setInterval(moveAsteroids, 40);
+  }
+
+  // Weighted-random card: hard / new cards come up more, mastered ones rarely.
+  // Never the same card twice on screen, and never twice in a row.
+  function nextAstroCard() {
+    let pool = currentCards.filter(c => !astroActive.some(a => a.card === c));
+    if (!pool.length) pool = currentCards;
+    if (pool.length > 1 && astroLast) {
+      const alt = pool.filter(c => c !== astroLast);
+      if (alt.length) pool = alt;
+    }
+    const card = weightedShuffle(pool, c => cardWeight(c) * (astroSeen.has(c) ? 1 : 3))[0];
+    astroSeen.add(card);
+    astroLast = card;
+    return card;
+  }
+
+  function spawnAsteroid() {
+    // USER REQUIREMENT: EXACTLY 2 AT A TIME MAX
+    if (astroActive.length >= 2) return;
+    const area = document.getElementById('asteroidArea');
+    if (!area) return;
+
+    const card = nextAstroCard();
+
+    // USER REQUIREMENT: Dynamic circle sizing based on words and letters
+    const { diameter, fontSize } = calculateAsteroidMetrics(card.term);
+
+    const maxX = Math.max(12, area.clientWidth - diameter - 16);
+    const x = Math.max(12, Math.floor(Math.random() * maxX));
+
+    // USER REQUIREMENT: Gentle speed, not too fast
+    const baseSpeed = astroSpeed === 'gentle' ? 0.35 : 0.55;
+    const speed = baseSpeed + Math.random() * 0.18;
+
+    const el = document.createElement('div');
+    el.className = 'asteroid';
+    el.style.width = diameter + 'px';
+    el.style.height = diameter + 'px';
+    el.style.left = x + 'px';
+    el.style.top = -diameter + 'px';
+    el.style.fontSize = fontSize;
+    el.textContent = card.term;
+    area.appendChild(el);
+
+    const obj = { el, y: -diameter, speed, def: card.def, term: card.term, card, diameter, missed: false };
+    el.onclick = () => selectAstroTarget(astroActive.indexOf(obj));
+    astroActive.push(obj);
+    document.getElementById('astroActiveCount').textContent = astroActive.length;
+
+    if (astroTargetIdx < 0) selectAstroTarget(0);
+  }
+
+  function selectAstroTarget(i) {
+    if (i < 0 || i >= astroActive.length) return;
+    astroTargetIdx = i;
+
+    astroActive.forEach((a, j) => {
+      if (j === i) a.el.classList.add('target');
+      else a.el.classList.remove('target');
+    });
+
+    const target = astroActive[i];
+    document.getElementById('astroTarget').textContent = '🎯 Target: ' + target.term;
+
+    const correct = target.def;
+    const others = currentCards.filter(c => c.def !== correct).map(c => c.def);
+    for (let k = others.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [others[k], others[j]] = [others[j], others[k]];
+    }
+
+    const opts = [correct, ...others.slice(0, 3)];
+    for (let k = opts.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [opts[k], opts[j]] = [opts[j], opts[k]];
+    }
+
+    const box = document.getElementById('astroOptions');
+    box.innerHTML = '';
+    opts.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-secondary cute-scrollbar';
+      btn.style.cssText = 'font-size:0.84rem; padding:12px; text-align:left; line-height:1.3; max-height:85px; overflow-y:auto;';
+      btn.textContent = o;
+      btn.onclick = () => blastMC(o);
+      box.appendChild(btn);
+    });
+  }
+
+  function blastMC(chosen) {
+    if (astroTargetIdx < 0 || astroTargetIdx >= astroActive.length) return;
+    const a = astroActive[astroTargetIdx];
+
+    if (chosen === a.def) {
+      playCuteSuccess();
+      if (!a.missed) recordAnswer(a.card, 'ok'); // only counts if there was no wrong guess first
+      a.el.classList.add('hit');
+      setTimeout(() => a.el.remove(), 350);
+      astroActive.splice(astroTargetIdx, 1);
+      astroScore += 10;
+      document.getElementById('astroScore').textContent = astroScore;
+      document.getElementById('astroActiveCount').textContent = astroActive.length;
+      astroTargetIdx = -1;
+      document.getElementById('astroTarget').textContent = '';
+      document.getElementById('astroOptions').innerHTML = '';
+      if (astroActive.length > 0) selectAstroTarget(0);
+      else spawnAsteroid(); // nothing left on screen: bring the next one in right away
+    } else {
+      if (!a.missed) { a.missed = true; recordAnswer(a.card, 'miss'); }
+      document.getElementById('astroOptions').style.animation = 'shake 0.4s';
+      setTimeout(() => document.getElementById('astroOptions').style.animation = '', 400);
+      toast('Try again! 💪');
+    }
+  }
+
+  function moveAsteroids() {
+    const area = document.getElementById('asteroidArea');
+    if (!area) return;
+    const maxY = area.clientHeight;
+
+    for (let i = astroActive.length - 1; i >= 0; i--) {
+      const a = astroActive[i];
+      a.y += a.speed;
+      a.el.style.top = a.y + 'px';
+
+      if (a.y > maxY) {
+        a.el.remove();
+        if (!a.missed) { a.missed = true; recordAnswer(a.card, 'miss'); } // let it fall = didn't know it in time
+        const wasTarget = i === astroTargetIdx;
+        astroActive.splice(i, 1);
+        document.getElementById('astroActiveCount').textContent = astroActive.length;
+
+        if (wasTarget) {
+          astroTargetIdx = -1;
+          document.getElementById('astroTarget').textContent = '';
+          document.getElementById('astroOptions').innerHTML = '';
+          if (astroActive.length > 0) selectAstroTarget(0);
+        } else if (astroTargetIdx > i) {
+          astroTargetIdx--;
+        }
+
+        // USER REQUIREMENT: NO LIVES UNLESS CHALLENGE MODE ON
+        if (challengeMode) {
+          astroLives--;
+          const heartsStr = '💖 '.repeat(Math.max(0, astroLives));
+          document.getElementById('astroLivesBadge').innerHTML = `Lives: <span style="color:#ff4d6d;">${heartsStr || 'None'}</span>`;
+          if (astroLives <= 0) {
+            endAsteroid();
+            showOverlay('💫', 'Game Over', `Score: ${astroScore}. Try again or chill out!`, [
+              { text: 'Try Again 💖', primary: true, action: startAsteroid },
+              { text: 'Switch to Chill Mode 🌸', primary: false, action: toggleChallengeMode }
+            ]);
+            return; // asteroid list was reset - stop looping over it
+          }
+        }
+
+        if (astroActive.length === 0) spawnAsteroid(); // keep answer choices on screen
+      }
+    }
+  }
+
+  function endAsteroid() {
+    if (astroInterval) clearInterval(astroInterval);
+    if (astroSpawnTimer) clearInterval(astroSpawnTimer);
+    astroInterval = null;
+    astroSpawnTimer = null;
+    astroActive = [];
+    astroTargetIdx = -1;
+  }
+
+  // Floating background: scattered emojis + pure white twinkling glitter
+  function createHearts() {
+    const container = document.getElementById('hearts');
+    container.innerHTML = '';
+
+    // Soft scattered emojis (safe, widely-supported ones only)
+    const emojis = [
+      '💕', '💗', '🌸', '✨', '💖', '🎀', '⭐', '🌟', '💫',
+      '🦋', '🌺', '🌷', '✨', '💖', '🌸', '💕', '⭐', '💗'
+    ];
+    for (let i = 0; i < 26; i++) {
+      const h = document.createElement('div');
+      const emoji = emojis[i % emojis.length];
+      const isGlitter = emoji === '✨' || emoji === '⭐' || emoji === '🌟' || emoji === '💫' || Math.random() < 0.35;
+      h.className = 'heart' + (isGlitter ? ' glitter' : '');
+      h.textContent = emoji;
+
+      // Bias more emojis toward the right side of the screen
+      let left;
+      if (Math.random() < 0.68) {
+        left = 48 + Math.random() * 48; // 48–96% (right half bias)
+      } else {
+        left = 2 + Math.random() * 42;  // some on the left too
+      }
+      h.style.left = left + '%';
+      h.style.top = (Math.random() * 90 + 4) + '%';
+
+      const size = isGlitter ? (11 + Math.random() * 12) : (15 + Math.random() * 14);
+      h.style.fontSize = size + 'px';
+      h.style.opacity = (0.13 + Math.random() * 0.2).toFixed(2);
+      const duration = 10 + Math.random() * 9;
+      const delay = Math.random() * 7;
+      if (isGlitter && Math.random() < 0.55) {
+        h.style.animation = `sparkle ${3.8 + Math.random() * 4}s infinite ease-in-out`;
+        h.style.animationDelay = delay + 's';
+      } else {
+        h.style.animationDuration = duration + 's';
+        h.style.animationDelay = delay + 's';
+      }
+      container.appendChild(h);
+    }
+
+    // Pure white twinkling circle glitter only
+    for (let i = 0; i < 55; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'sparkle-dot';
+      const size = 2 + Math.random() * 4.5; // small 2–6.5 px circles
+      const color = 'rgba(255, 255, 255, 0.95)';
+      dot.style.width = size + 'px';
+      dot.style.height = size + 'px';
+      // Spread glitter everywhere
+      dot.style.left = (Math.random() * 98 + 1) + '%';
+      dot.style.top = (Math.random() * 96 + 2) + '%';
+      // Soft white glow
+      const glow = Math.max(5, size * 2.4);
+      dot.style.background = color;
+      dot.style.boxShadow = `0 0 ${glow}px rgba(255,255,255,0.95), 0 0 ${glow * 2}px rgba(255,255,255,0.55)`;
+      // Twinkle timing
+      const dur = 1.6 + Math.random() * 3.4;
+      const delay = Math.random() * 5;
+      dot.style.animation = `glitterTwinkle ${dur}s infinite ease-in-out`;
+      dot.style.animationDelay = delay + 's';
+      container.appendChild(dot);
+    }
+  }
+
+  createHearts();
+  renderHome();
+
+  // Keyboard shortcuts for Study
+  window.addEventListener('keydown', (e) => {
+    if (!document.getElementById('study').classList.contains('active')) return;
+    if (document.getElementById('overlay').classList.contains('show')) return;
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); skipCard(); }
+    if (studyFlipped) {
+      if (e.key === '1') rateCard('again');
+      if (e.key === '2') rateCard('ok');
+    }
+  });
+</script>
+</body>
+</html>
