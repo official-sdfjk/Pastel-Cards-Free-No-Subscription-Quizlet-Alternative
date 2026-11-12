@@ -6,7 +6,7 @@ How to download:
 
 It was made using Grok, Gemini, and Claude (using only their free tier). If you encounter any bugs, tell me.
 
-Since I made it using A.I. without me writing any line of code, do not make closed-source version of this and make money off of it. it should be free for everyone to use. this is only available for laptops and PCs, it is an HTML file (unless you can make it work on your phone).
+This is only available for laptops and PCs, it is an HTML file (unless you can make it work on your phone).
 
 Features it has:
 - make cards in a deck (can be deleted, edited, renamed)
