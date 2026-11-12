@@ -1,4 +1,8 @@
 # Pastel-Cards-Free-No-Subscription-Quizlet-Alternative
+How to download:
+1. click the green button that says "<> Code"
+2. click "Download ZIP"
+3. go through the zip file and click "pastelcards"
 
 It was made using Grok, Gemini, and Claude (using only their free tier). If you encounter any bugs, tell me.
 
