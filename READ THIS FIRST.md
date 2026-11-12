@@ -1,4 +1,6 @@
 # Pastel-Cards-Free-No-Subscription-Quizlet-Alternative
+This was made using Grok, Gemini, and Claude I didn't make any contribution to the code or write any code, just prompted it and got lucky it looks cute and girly.
+
 How to download:
 1. click the green button that says "<> Code"
 2. click "Download ZIP"
