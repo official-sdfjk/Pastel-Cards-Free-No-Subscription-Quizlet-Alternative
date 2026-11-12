@@ -24,4 +24,6 @@ Level	How a card gets there
 🌸 Learned (Right 4 times in a row)
 👑 Mastered	(Right again after resting a day, then again after a week)
 
+All of the cards and decks are saved locally on your computer automatically, but you need to manually back up your cards if you wanna use and access your cards using another device by clicking "Back up Decks" then opening the html file in the other device, send the json file (your backup) to the other device and clicking "Restore" then choosing the json file you downloaded.
+
 Note: the Christian God wants me to help people who don't have a free-no-subscription-required quizlet alternative so I have to share this with you guys (Galatians 6:10- "As we have therefore opportunity, let us do good unto all men..."). If you find any bugs, or don't know how to set it up, tell me
